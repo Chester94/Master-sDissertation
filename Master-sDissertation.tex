@@ -1,0 +1,480 @@
+\documentclass[a4paper, 14pt]{extarticle}
+\usepackage[english, russian]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{fullpage}
+\usepackage{indentfirst} % Первый абзац в разделе тоже с красной строки
+\usepackage{cmap} % для кодировки шрифтов в pdf (чтобы не было крокозябры при копировании из pdf )
+\usepackage{graphicx} % для вставки картинок
+\graphicspath{{res/}} % Путь к папке с картинками
+\sloppy % Включение переноса слов в тексте
+
+\title{Название}
+\author{Фролов Даниил Александрович}
+
+% Для красивой вставки исходного программного кода 
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+% Параметры раскрски исходного кода программы 
+\lstset{ %
+	language = Java,
+	extendedchars=\true, %Чтобы русские буквы в комментариях были
+	%inputencoding=cp1251,
+	%commentstyle=\itshape,
+	%stringstyle=\bf,
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\footnotesize,        % size of fonts used for the code
+  %basicstyle=\ttfamily\fontsize{11pt}{11pt}\selectfont,
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
+}
+
+\usepackage{hyperref} % Для добавления ссылок в тесте
+
+% Настройка цветов для ссылок
+\hypersetup{
+colorlinks = true,
+linkcolor = black,
+pagecolor = black,
+urlcolor = blue, 
+citecolor = black
+}
+
+% Математика
+\usepackage{amssymb} % For use "mathbb" function
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\newcommand{\La}{\mathscr{L}} % Функция Лагранжа
+\newcommand{\ls}{{ℓ}} % Красивая l, чтобы легче было отличить от i, 1 b других палок
+\providecommand{\norm}[1]{\lVert#1\rVert} % Норма вектора : ||w||
+\newcommand{\dpt}[1]{\left\langle#1\right\rangle} % dot product using brackets
+\newcommand{\brackets}[1]{\left(#1\right)} % Обернуть скобками автоматического размера
+%\newcommand{\dpts}[2]{#2 \langle#1 #2 \rangle} % dot product using brackets with manual size
+\newcommand{\R}{\mathbb{R}} % beautiful R for R^n labels
+\newcommand{\il}{i = 1, \ldots, \ls} % writes i = 1, ..., l
+\newcommand{\ili}{\quad i = 1, \ldots, \ls} % writes i = 1, ..., l with indent in begin
+\newcommand{\sumil}{\sum_{i=1}^{\ls}} % Сумма по i, которая изменяется от 1 до l
+\newcommand{\minl}{\min\limits} % min with limits under "min" label
+\newcommand{\maxl}{\max\limits} % max with limits under "max" label
+
+% Окружение для теорем, определений и т.д.
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}
+\newtheorem{theorem}{Теорема}
+\newtheorem{example}{Пример}
+
+% Поправить стиль отрисовки формул (особенно актуально для сумм https://ru.sharelatex.com/learn/Display_style_in_math_mode)
+\everymath{\displaystyle}
+
+%\bibliographystyle{unsrt} % упорядочить список использованной литературы по порядку упоминания их в тексте
+\bibliographystyle{utf8gost705u}
+%\bibliographystyle{utf8gost71u}
+
+\usepackage[labelfont=bf, labelsep=space]{caption} % Делаем надписи "Рис.1" под рисунками жирными и без двоеточия.
+\usepackage[top=20mm, bottom=20mm, left=30mm, right=20mm
+, nohead % Убрать расстояние для верхних колонтикулов
+%, nofoot % Убрать расстояние для нижних колонтикулов
+]
+{geometry} % Размер полей у старницы
+\setlength{\parindent}{1.25cm} % Размер интервала для абзацев 
+\usepackage{setspace}
+\singlespacing % одинарный интервал
+\renewcommand\normalsize{\fontsize{14}{16.8pt}\selectfont} % Сделать размер шрифта 14
+
+\usepackage{caption} % подписи к рисункам в русской типографской традиции
+\DeclareCaptionFormat{GOSTtable}{#2#1\\#3\vspace*{-\baselineskip}}
+\DeclareCaptionLabelSeparator{fill}{\hfill}
+\DeclareCaptionLabelFormat{fullparents}{\bothIfFirst{#1}{~}#2}
+\captionsetup[table]{
+     format=GOSTtable,
+     %font={footnotesize},
+     labelformat=fullparents,
+     labelsep=fill,
+     labelfont=normal,
+     textfont=bf,
+     justification=centering,
+     singlelinecheck=false
+     }
+
+% Начинать каждую главу с новой страницы
+\usepackage{titlesec}
+\newcommand{\sectionbreak}{\clearpage}
+
+% Позволяет подсчитывать число страниц в документе с помощью комманды \pageref*{LastPage}
+\usepackage{lastpage}
+%\pretolerance 10000
+
+\begin{document}
+\setcounter{tocdepth}{3}
+
+% Позволяет подсчитывать число рисунков, таблиц и глав(section) в документе
+\newcounter{totfigures}
+\newcounter{tottables}
+\newcounter{totsections}
+\makeatletter
+\AtEndDocument{%
+	\addtocounter{totfigures}{\value{figure}}%
+	\addtocounter{tottables}{\value{table}}%
+	\addtocounter{totsections}{\value{section}}%
+	\immediate\write\@mainaux{%
+		\string\gdef\string\totfig{\number\value{totfigures}}%
+		\string\gdef\string\tottab{\number\value{tottables}}%    
+		\string\gdef\string\totsections{\number\value{totsections}}%  
+	}%
+}
+\makeatother
+
+
+%Титульный лист
+{
+\thispagestyle{empty}
+
+\begin{center}
+	
+	Министерство образования и науки Российской Федерации\\[0.3cm]
+	Государственное образовательное учреждение\\
+	высшего профессионального образования\\
+	"<Ярославский государственный университет им. П.Г. Демидова">\\
+	(ЯрГУ)\\[0.3cm]
+	
+	Кафедра компьютерных сетей
+	
+	\bigskip
+	
+	\hspace{15em}"<Допустить к защите">
+	
+	\begin{flushright}
+		Заведующий кафедрой\par
+		д. ф.-м. н., профессор\par
+		\underline{\hspace{3.2cm}}Глызин\,С.\,Д.\par
+		"<\underline{\hspace{0.5cm}}">\underline{\hspace{3.4cm}}2017 г.\par
+	\end{flushright}
+	
+	\bigskip
+	
+	{\textbf
+		{\textit
+			{Выпускная квалификационная работа бакалавра}
+		}
+	}
+	\\
+	по направлению 01.04.02 Прикладная математика и информатика
+	
+	\bigskip
+	
+	{\bf
+		Название 
+	}
+\end{center}
+
+\medskip
+
+\begin{flushright}
+	Научный руководитель\par
+	д. ф.-м. н., профессор\par
+	\underline{\hspace{3.5cm}}Глызин\,С.\,Д.\par
+	"<\underline{\hspace{0.8cm}}">\underline{\hspace{3.5cm}}2017 г.\par
+\end{flushright}
+
+\bigskip 
+
+\begin{flushright}
+	Студент группы ИВТ-21-МО\par
+	\underline{\hspace{2.5cm}}Фролов\,Д.\,А.\par
+	"<\underline{\hspace{0.8cm}}">\underline{\hspace{3.5cm}}2017 г.\par
+\end{flushright}
+
+\vspace{\fill}
+
+\begin{center}
+	Ярославль 2017
+\end{center}
+
+\clearpage
+}
+
+
+
+%Реферат
+\section*{Реферат}
+\noindent Объем \pageref*{LastPage}~с., 
+\totsections~гл., \totfig~рис., 
+7 источников, 2 прил. 
+
+\noindent\textbf{OpenMP, MPI, CUDA, параллельные вычисления, диффузионные задачи}
+
+
+\par Работа описывает реализацию части программного комплекса для моделирования диффузионных задач, отвечающую за параллельные вычисления. Рассматриваются теоретические основы численного решения задач "<реакция-диффузия">, а также формулируются требования к программного комплексу.
+
+\par В работе приводится описание архитектуры приложения и используемых классов, а также рассматривается алгоритм параллельных вычислений, применяемый в программном комплексе.
+
+\par Автором работы проведен анализ производительности на различных комбинациях устройств.
+
+
+
+
+%Содержание
+\tableofcontents
+
+
+
+
+
+%Введение
+\section*{Введение}
+\addcontentsline{toc}{section}{Введение}
+123
+
+
+
+
+%Первая глава
+\section{Постановка задачи}
+
+\subsection{Теоретические основы решения задач "<реакция-диффузия">}
+123
+
+
+
+\subsection{Основные требования к приложению}
+123
+
+
+
+%Заключение
+\section*{Заключение}
+\addcontentsline{toc}{section}{Заключение}
+123
+
+
+
+
+
+
+%Список литературы
+%\begin{thebibliography}{99}
+%\addcontentsline{toc}{section}{Список литературы}
+%
+%\bibitem{GlyzinSD1}
+%\textit{Глызин С.\,Д., Шокин П.\,Л. } 
+%{Диффузионный хаос в задаче «реакция–диффузия» c гантелеобразной областью определения пространственной переменной. 
+%М.: Модел. и анализ информ. систем, 2013. -- 43--57 с. }
+%
+%\bibitem{GlyzinSD2}
+%\textit{Глызин С.\,Д. } 
+%{Размерностные характеристики диффузионного хаоса. 
+%М.: Модел. и анализ информ. систем, 2013. -- 30--51 с. }
+%
+%\bibitem{AntonovOpenMP}
+%\textit{Антонов А.\,С. } 
+%{Параллельное программирование с использованием OpenMP. 
+%М.: Изд-во МГУ, 2009. -- 77 с. } 
+%
+%\bibitem{SandersCUDA}
+%\textit{Сандерс Дж., Кэндрот Э. } 
+%{Технология CUDA в примерах. Введение в программирование графических процессоров. 
+%М.: ДМК Пресс, 2013. -- 232 с. } 
+%
+%\end{thebibliography}
+
+
+
+
+\newpage
+
+\begin{flushright}
+Приложение А
+\end{flushright}
+\addcontentsline{toc}{section}{Приложение А}
+
+\begin{center}
+\textbf{Класс Block}
+\end{center}
+
+\begin{lstlisting}
+class Block {
+
+protected:
+	Solver* mSolver;
+
+	int dimension;
+
+	int xCount;
+	int yCount;
+	int zCount;
+
+	int xOffset;
+	int yOffset;
+	int zOffset;
+
+	unsigned short int* mCompFuncNumber;
+
+	int cellSize;
+	int haloSize;
+
+	int deviceNumber;
+
+	int nodeNumber;
+
+	int* sendBorderInfo;
+	std::vector<int> tempSendBorderInfo;
+
+	int* receiveBorderInfo;
+	std::vector<int> tempReceiveBorderInfo;
+
+	double** blockBorder;
+	int* blockBorderMemoryAllocType;
+	std::vector<double*> tempBlockBorder;
+	std::vector<int> tempBlockBorderMemoryAllocType;
+
+	double** externalBorder;
+	int* externalBorderMemoryAllocType;
+	std::vector<double*> tempExternalBorder;
+	std::vector<int> tempExternalBorderMemoryAllocType;
+
+	int countSendSegmentBorder;
+	int countReceiveSegmentBorder;
+
+	void freeMemory(int memory_alloc_type, double* memory);
+	void freeMemory(int memory_alloc_type, int* memory);
+
+	virtual void prepareBorder(int borderNumber, int zStart, int zStop, int yStart, int yStop, int xStart, int xStop) = 0;
+
+	virtual void computeStageCenter_1d(int stage, double time) = 0;
+	virtual void computeStageCenter_2d(int stage, double time) = 0;
+	virtual void computeStageCenter_3d(int stage, double time) = 0;
+
+	virtual void computeStageBorder_1d(int stage, double time) = 0;
+	virtual void computeStageBorder_2d(int stage, double time) = 0;
+	virtual void computeStageBorder_3d(int stage, double time) = 0;
+
+	virtual void createSolver(int solverIdx,
+		double _aTol, double _rTol) = 0;
+
+	virtual double* getNewBlockBorder(Block* neighbor,
+		int borderLength, int& memoryType) = 0;
+		
+	virtual double* getNewExternalBorder(Block* neighbor,
+		int borderLength, double* border, int& memoryType) = 0;
+
+	func_ptr_t* mUserFuncs;
+	initfunc_fill_ptr_t* mUserInitFuncs;
+	double* mParams;
+	int mParamsCount;
+
+public:
+	Block(int _dimension, int _xCount, int _yCount, int _zCount,
+			int _xOffset, int _yOffset, int _zOffset,
+			int _nodeNumber, int _deviceNumber,
+			int _haloSize, int _cellSize);
+
+	virtual ~Block();
+
+	virtual bool isRealBlock() = 0;
+
+	virtual void initSolver() { return; }
+
+	void prepareStageData(int stage);
+
+	void computeStageBorder(int stage, double time);
+	void computeStageCenter(int stage, double time);
+
+	void prepareArgument(int stage, double timestep );
+
+	double getSolverStepError(double timeStep) {
+		return mSolver != NULL ? mSolver->getStepError(timeStep) : 0.0;
+	}
+
+	void confirmStep(double timestep);
+	void rejectStep(double timestep);
+
+	virtual int getBlockType() = 0;
+
+	virtual void print() = 0;
+
+	virtual void getCurrentState(double* result) = 0;
+
+	int getXCount() { return xCount; }
+	int getYCount() { return yCount; }
+	int getZCount() { return zCount; }
+
+	int getXOffset() { return xOffset; }
+	int getYOffset() { return yOffset; }
+	int getZOffset() { return zOffset; }
+
+	int getGridNodeCount();
+	int getGridElementCount();
+
+	int getDeviceNumber() { return deviceNumber; }
+	int getNodeNumber() { return nodeNumber; }
+
+	int getDimension() { return dimension; }
+
+	void setFunctionNumber(unsigned short int* functionNumberData ) { return; }
+
+	double* addNewBlockBorder(Block* neighbor, int side,
+		int mOffset, int nOffset, int mLength, int nLength);
+		
+	double* addNewExternalBorder(Block* neighbor, int side,
+		int mOffset, int nOffset,
+		int mLength, int nLength, double* border);
+
+	virtual void moveTempBorderVectorToBorderArray() = 0;
+
+	virtual void loadData(double* data) = 0;
+};
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+\newpage
+
+\begin{flushright}
+Приложение Б
+\end{flushright}
+\addcontentsline{toc}{section}{Приложение Б}
+
+\begin{center}
+\textbf{Функция передачи данных между узлами}
+\end{center}
+
+\begin{lstlisting}
+// Function for sending and receiving data
+void Interconnect::sendRecv(int locationNode) {
+	// Devices are located on the same node
+	if(locationNode == sourceLocationNode && locationNode == destinationLocationNode)
+		return;
+		
+	// This thread should send the information
+	if(locationNode == sourceLocationNode) {
+		MPI_Isend(sourceBlockBorder, borderLength, MPI_DOUBLE, destinationLocationNode, 999, MPI_COMM_WORLD, request);
+		flag = true;
+		return;
+	}
+
+	// This thread should receive the information
+	if(locationNode == destinationLocationNode) {
+		MPI_Irecv(destinationExternalBorder, borderLength, MPI_DOUBLE, sourceLocationNode, 999, MPI_COMM_WORLD, request);
+		flag = true;
+		return;
+	}
+}
+\end{lstlisting}
+
+\end{document}
